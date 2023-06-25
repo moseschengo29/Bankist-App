@@ -194,6 +194,8 @@ logoutBtn.addEventListener('click', e => {
   }
 });
 
+let logigedIn = true;
+
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
   const amount = Number(inputTransferAmount.value);
