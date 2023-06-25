@@ -9,4 +9,4 @@ To be able to log in and use the app there are several login users as follows:
 4. username: mf password: 4444
 
 ### View the demo here :
-(https://moseschengo29.github.io/Bankist-App/)
+https://moseschengo29.github.io/Bankist-App/
