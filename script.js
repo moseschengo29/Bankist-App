@@ -154,7 +154,36 @@ const updateUI = function (acc) {
   calcDisplaySummary(acc);
 };
 
-let currentAccount;
+const startLogOutTimer = function () {
+  const tick = function () {
+    const min = String(Math.trunc(time / 60)).padStart(2, 0);
+    const seconds = String(time % 60).padStart(2, 0);
+    //in eac call, print out remaining time to the Ui
+
+    labelTimer.textContent = `${min}:${seconds}`;
+
+    //when 0 timer stops
+    if (time === 0) {
+      clearInterval(timer);
+      logoutBtn.remove();
+      containerApp.style.opacity = 0;
+      labelWelcome.textContent = 'Log back in to Continue';
+    }
+
+    //decrease 1s
+    time--;
+  };
+  //set time to 20 minutes
+  let time = 1200;
+
+  //call timer every second
+  tick();
+  const timer = setInterval(tick, 1000);
+
+  return timer;
+};
+
+let currentAccount, timer;
 
 btnLogin.addEventListener('click', function (event) {
   event.preventDefault();
@@ -174,9 +203,14 @@ btnLogin.addEventListener('click', function (event) {
     inputLoginPin.blur();
     inputLoginUsername.blur();
     logoutBtn.classList.remove('hidden');
+    startLogOutTimer();
   } else {
     alert('Account doesnt exist');
   }
+
+  //timer
+  if (timer) clearInterval(timer);
+  timer = startLogOutTimer();
 
   updateUI(currentAccount);
 });
@@ -193,8 +227,6 @@ logoutBtn.addEventListener('click', e => {
     console.log('Not logging out');
   }
 });
-
-let logigedIn = true;
 
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
@@ -215,6 +247,10 @@ btnTransfer.addEventListener('click', function (e) {
     receiverAccount.movements.push(amount);
 
     updateUI(currentAccount);
+
+    //reset timer
+    clearInterval(timer);
+    timer = startLogOutTimer();
   }
 });
 
@@ -230,8 +266,12 @@ btnLoan.addEventListener('click', function (e) {
     currentAccount.movements.push(amount);
 
     updateUI(currentAccount);
-    inputLoanAmount.value = '';
+
+    //reset timer
+    clearInterval(timer);
+    timer = startLogOutTimer();
   }
+  inputLoanAmount.value = '';
 });
 
 btnClose.addEventListener('click', function (e) {
